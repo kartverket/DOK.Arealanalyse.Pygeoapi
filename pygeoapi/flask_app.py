@@ -50,7 +50,6 @@ from pygeoapi.openapi import load_openapi_document
 from pygeoapi.config import get_config
 from pygeoapi.util import get_mimetype, get_api_rules
 
-
 CONFIG = get_config()
 OPENAPI = load_openapi_document()
 
@@ -620,3 +619,9 @@ def serve(ctx, server=None, debug=False):
 
 if __name__ == '__main__':  # run locally, for testing
     serve()
+
+from flask_http_middleware import MiddlewareManager
+from dokanalyse.utils.correlation_id_middleware import CorrelationIdMiddleware
+
+APP.wsgi_app = MiddlewareManager(APP)
+APP.wsgi_app.add_middleware(CorrelationIdMiddleware)

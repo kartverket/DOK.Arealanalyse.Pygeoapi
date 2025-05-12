@@ -9,9 +9,13 @@ services:
       - ./pygeoapi-config.yml:/pygeoapi/local.config.yml
       - /home/toranders/dev/dokanalyse:/mnt/dokanalyse
       - /home/toranders/dev/dokanalyse/config:/mnt/dokanalyse/config
+      - /mnt/dokanalyse/filegdb/ar5.gdb:/mnt/dokanalyse/filegdb/ar5.gdb
     environment:
-      - PYGEOAPI_CONFIG=/pygeoapi/local.config.yml
-      - PYGEOAPI_API_URL=http://localhost:5000/
-      - APP_FILES_DIR=/mnt/dokanalyse/app_files
-      - DOKANALYSE_CONFIG_DIR=/mnt/dokanalyse/config
-      - SOCKET_IO_SRV_URL=http://localhost:5002/
+      - PYGEOAPI_CONFIG=${PYGEOAPI_CONFIG}
+      - PYGEOAPI_API_URL=${PYGEOAPI_API_URL}
+      - APP_FILES_DIR=${APP_FILES_DIR}
+      - DOKANALYSE_CONFIG_DIR=${DOKANALYSE_CONFIG_DIR}
+      - AR5_FGDB_PATH=${AR5_FGDB_PATH}
+      - BLOB_STORAGE_CONN_STR=${BLOB_STORAGE_CONN_STR}
+      - MAP_IMAGE_API_URL=${MAP_IMAGE_API_URL}
+      - SOCKET_IO_SRV_URL=${SOCKET_IO_SRV_URL}

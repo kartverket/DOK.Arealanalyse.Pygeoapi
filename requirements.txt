@@ -16,4 +16,4 @@ requests
 shapely
 SQLAlchemy
 tinydb
-dokanalyse
+dokanalyse[gdal-362]==0.0.5
