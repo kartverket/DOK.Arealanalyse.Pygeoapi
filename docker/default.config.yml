@@ -73,21 +73,9 @@ metadata:
     name: Kartverket
     email: post@kartverket.no
     url: https://www.kartverket.no
-    position:
-    address:
-    city:
-    stateorprovince:
-    postalcode:
-    country:
-    phone:
-    fax:
-    instructions:
-    hours:
-    role:
-
 
 resources:
   dokanalyse:
     type: process
     processor:
-      name: pygeoapi.process.dokanalyse.DokanalyseProcessor
+      name: dokanalyse.DokanalyseProcessor
