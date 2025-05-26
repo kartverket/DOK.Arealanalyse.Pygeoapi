@@ -59,7 +59,7 @@ RUN apt update -y \
     && pip3 install --break-system-packages -r requirements-docker.txt \
     && pip3 install --break-system-packages -r requirements-admin.txt \    
     && pip3 install --break-system-packages -e . \
-    && pip3 install --break-system-packages dokanalyse \
+    && pip3 install --break-system-packages git+https://github.com/kartverket/DOK.Arealanalyse.Process@main \
     && cp /pygeoapi/docker/default.config.yml /pygeoapi/local.config.yml \
     && cp /pygeoapi/docker/entrypoint.sh /entrypoint.sh  \
     && chmod +x /entrypoint.sh \

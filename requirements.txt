@@ -16,4 +16,4 @@ requests
 shapely
 SQLAlchemy
 tinydb
-dokanalyse[gdal-362]==0.0.7
+dokanalyse @ git+https://github.com/kartverket/DOK.Arealanalyse.Process@main
