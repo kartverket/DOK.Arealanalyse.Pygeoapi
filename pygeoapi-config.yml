@@ -7,7 +7,7 @@ server:
   encoding: utf-8
   gzip: false
   languages:
-  - en-US
+    - en-US
   pretty_print: true
   limit: 10
   map:
@@ -25,11 +25,11 @@ metadata:
       en: OGC API er en ny generasjon standarder fra Open Geospatial Consortium. På denne serveren tilbys implementasjon av arealanalyse av DOK-datasett
     keywords:
       en:
-      - OGC
-      - Geospatial
-      - Geodata
-      - Data
-      - API
+        - OGC
+        - Geospatial
+        - Geodata
+        - Data
+        - API
     keywords_type: theme
     terms_of_service: https://creativecommons.org/licenses/by/4.0/
     url: https://www.kartverket.no
@@ -46,7 +46,40 @@ metadata:
     url: https://www.kartverket.no
 
 resources:
-  dokanalyse:
-    type: process
-    processor:
-      name: dokanalyse.DokanalyseProcessor
+  # dokanalyse:
+  #   type: process
+  #   processor:
+  #     name: dokanalyse.DokanalyseProcessor
+
+  reguleringsplaner:
+    type: collection
+    title:
+      en: Reguleringsplaner
+    description:
+      en: Reguleringsplaner i Norge
+    keywords:
+      en:
+        - plan
+        - bygg
+        - blah
+    extents:
+      spatial:
+        bbox: [-120, -90, 120, 90]
+        crs: http://www.opengis.net/def/crs/EPSG/0/25833
+    providers:
+      - type: feature
+        name: PostgreSQL
+        data:
+          host: 172.28.64.1
+          dbname: reguleringsplaner
+          user: postgres
+          password: "061214"
+          search_path: [reguleringsplaner_vn2_c267b67cd67f4d149a79fd0bf46a9e61]
+        id_field: objid
+        table: rpomrade_omrade
+        geom_field: omrade
+        crs:
+          - http://www.opengis.net/def/crs/OGC/1.3/CRS84
+          - http://www.opengis.net/def/crs/EPSG/0/4326
+          - http://www.opengis.net/def/crs/EPSG/0/25833
+        storage_crs: http://www.opengis.net/def/crs/EPSG/0/25833

@@ -16,4 +16,6 @@ requests
 shapely
 SQLAlchemy
 tinydb
-dokanalyse @ git+https://github.com/kartverket/DOK.Arealanalyse.Process@main
+geoalchemy2
+psycopg2
+# dokanalyse @ git+https://github.com/kartverket/DOK.Arealanalyse.Process@main

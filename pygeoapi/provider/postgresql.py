@@ -56,7 +56,7 @@ from decimal import Decimal
 import functools
 import logging
 
-from geoalchemy2 import Geometry  # noqa - this isn't used explicitly but is needed to process Geometry columns
+from geoalchemy2 import Geometry, WKBElement, WKTElement  # noqa - this isn't used explicitly but is needed to process Geometry columns
 from geoalchemy2.functions import ST_MakeEnvelope
 from geoalchemy2.shape import to_shape, from_shape
 from pygeofilter.backends.sqlalchemy.evaluate import to_filter
@@ -76,6 +76,9 @@ from pygeoapi.provider.base import BaseProvider, \
     ProviderItemNotFoundError
 from pygeoapi.util import get_transform_from_crs
 
+from osgeo import ogr, osr
+import json
+from typing import Dict
 
 LOGGER = logging.getLogger(__name__)
 
@@ -85,6 +88,7 @@ class PostgreSQLProvider(BaseProvider):
     using sync approach and server side
     cursor (using support class DatabaseCursor)
     """
+
     def __init__(self, provider_def):
         """
         PostgreSQLProvider Class constructor
@@ -157,6 +161,7 @@ class PostgreSQLProvider(BaseProvider):
         """
 
         LOGGER.debug('Preparing filters')
+
         property_filters = self._get_property_filters(properties)
         cql_filters = self._get_cql_filters(filterq)
         bbox_filter = self._get_bbox_filter(bbox)
@@ -167,6 +172,7 @@ class PostgreSQLProvider(BaseProvider):
 
         LOGGER.debug('Querying PostGIS')
         # Execute query within self-closing database Session context
+
         with Session(self._engine) as session:
             results = (session.query(self.table_model)
                        .filter(property_filters)
@@ -175,17 +181,21 @@ class PostgreSQLProvider(BaseProvider):
                        .filter(time_filter)
                        .options(selected_properties))
 
-            matched = results.count()
+            matched = 10
 
             LOGGER.debug(f'Found {matched} result(s)')
 
             LOGGER.debug('Preparing response')
+            
             response = {
                 'type': 'FeatureCollection',
-                'features': [],
-                'numberMatched': matched,
-                'numberReturned': 0
+                'features': []
             }
+
+            self._add_geojson_crs(response, 25833)
+
+            response['numberMatched'] = matched
+            response['numberReturned'] = 0
 
             if resulttype == "hits" or not results:
                 return response
@@ -382,6 +392,28 @@ class PostgreSQLProvider(BaseProvider):
         self._db_password = parameters.get('password')
         self.db_options = options
 
+    def _transform_geometry(self, geometry: ogr.Geometry, src_epsg: int, dest_epsg: int) -> None:
+        source = osr.SpatialReference()
+        source.ImportFromEPSG(src_epsg)
+        source.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+        target = osr.SpatialReference()
+        target.ImportFromEPSG(dest_epsg)
+
+        transform = osr.CoordinateTransformation(source, target)
+        geometry.Transform(transform)
+
+    def _add_geojson_crs(self, geojson: Dict, epsg: int) -> None:
+        if epsg is None or epsg == 4326:
+            return
+
+        geojson['crs'] = {
+            'type': 'name',
+            'properties': {
+                'name': 'urn:ogc:def:crs:EPSG::' + str(epsg)
+            }
+        }
+
     def _sqlalchemy_to_feature(self, item, crs_transform_out=None):
         feature = {
             'type': 'Feature'
@@ -395,11 +427,20 @@ class PostgreSQLProvider(BaseProvider):
 
         # Convert geometry to GeoJSON style
         if feature['properties'].get(self.geom):
-            wkb_geom = feature['properties'].pop(self.geom)
-            shapely_geom = to_shape(wkb_geom)
-            if crs_transform_out is not None:
-                shapely_geom = crs_transform_out(shapely_geom)
-            geojson_geom = shapely.geometry.mapping(shapely_geom)
+            ewkb_elem: WKBElement = feature['properties'].pop(self.geom)
+            wkb_elem = ewkb_elem.as_wkb()
+            geom: ogr.Geometry = ogr.CreateGeometryFromWkb(wkb_elem.data)
+            linear_geom: ogr.Geometry = geom.GetLinearGeometry()
+            src_epsg = ewkb_elem.srid
+
+            # if crs_transform_out is not None:
+            # print(crs_transform_out)
+            # if crs_transform_out is None and src_epsg != 4326:
+            # self._transform_geometry(linear_geom, src_epsg, 4326)
+
+            json_str = linear_geom.ExportToJson(['COORDINATE_PRECISION=6'])
+            geojson_geom = json.loads(json_str)
+
             feature['geometry'] = geojson_geom
         else:
             feature['geometry'] = None
@@ -528,6 +569,12 @@ class PostgreSQLProvider(BaseProvider):
         return selected_properties_clause
 
     def _get_crs_transform(self, crs_transform_spec=None):
+        print('A')
+        print(crs_transform_spec)
+        print('B')
+        print(crs_transform_spec.source_crs_wkt)
+        print('C')
+        print(crs_transform_spec.target_crs_wkt)
         if crs_transform_spec is not None:
             crs_transform = get_transform_from_crs(
                 pyproj.CRS.from_wkt(crs_transform_spec.source_crs_wkt),
