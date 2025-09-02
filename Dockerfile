@@ -6,6 +6,7 @@ ARG LANG="en_US.UTF-8"
 ARG DEB_BUILD_DEPS="\
     build-essential \
     curl \
+    git \
     python3-dev \
     unzip"
 
