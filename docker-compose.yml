@@ -1,0 +1,20 @@
+name: dokanalyse
+
+services: 
+  pygeoapi:
+    build: .
+    ports:
+      - "5000:80"
+    volumes:
+      - ./pygeoapi-config.yml:/pygeoapi/local.config.yml
+      - /mnt/dokanalyse:/mnt/dokanalyse
+      - /mnt/dokanalyse/config:/mnt/dokanalyse/config
+      - /mnt/dokanalyse/filegdb/ar5.gdb:/mnt/dokanalyse/filegdb/ar5.gdb
+    environment:
+      - PYGEOAPI_CONFIG=${PYGEOAPI_CONFIG}
+      - PYGEOAPI_API_URL=${PYGEOAPI_API_URL}
+      - APP_FILES_DIR=${APP_FILES_DIR}
+      - DOKANALYSE_CONFIG_DIR=${DOKANALYSE_CONFIG_DIR}
+      - AR5_FGDB_PATH=${AR5_FGDB_PATH}
+      - BLOB_STORAGE_CONN_STR=${BLOB_STORAGE_CONN_STR}
+      - SOCKET_IO_SRV_URL=${SOCKET_IO_SRV_URL}
