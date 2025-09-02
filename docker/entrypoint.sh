@@ -21,7 +21,7 @@ CONTAINER_PORT=${CONTAINER_PORT:=80}
 WSGI_APP=${WSGI_APP:=pygeoapi.flask_app:APP}
 WSGI_WORKERS=${WSGI_WORKERS:=4}
 WSGI_WORKER_TIMEOUT=${WSGI_WORKER_TIMEOUT:=6000}
-WSGI_WORKER_CLASS=${WSGI_WORKER_CLASS:=gevent}
+WSGI_WORKER_CLASS=${WSGI_WORKER_CLASS:=gthread}
 
 # What to invoke: default is to run gunicorn server
 entry_cmd=${1:-run}

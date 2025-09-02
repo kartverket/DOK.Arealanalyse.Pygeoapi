@@ -3,7 +3,9 @@
 .pytest_cache
 .mypy_cache
 .venv
-.set_env.sh
+.env
+.env.local
+set_env.sh
 build
 dist
 docs

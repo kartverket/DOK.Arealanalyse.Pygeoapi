@@ -14,36 +14,24 @@ ARG DEB_PACKAGES="\
     ca-certificates \
     gdal-bin \
     libgdal-dev \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libharfbuzz-subset0 \
     libsqlite3-mod-spatialite \
     locales \
     tzdata"
 
 ARG PYPI_PACKAGES="\
-    dask \
-    elasticsearch \
-    fiona \
-    gevent \
-    greenlet \
     gunicorn \
     jsonpatch \
-    mapscript \
-    netcdf4 \
     pandas \
-    psycopg2-binary \
     pydantic \
     pyld \
-    pymongo \
     pyproj \
-    pytest \
     python-dateutil \
     PyYAML \
-    rasterio \
-    scipy \
     shapely \
-    tinydb \
-    tz \
-    xarray \
-    zarr"
+    tz"
 
 ENV TZ=${TZ}
 ENV LANG=${LANG}
