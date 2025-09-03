@@ -7,7 +7,7 @@ server:
   encoding: utf-8
   gzip: false
   languages:
-    - en-US
+    - en
   pretty_print: true
   limits:
     default_items: 20

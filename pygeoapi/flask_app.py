@@ -50,6 +50,8 @@ from pygeoapi.openapi import load_openapi_document
 from pygeoapi.config import get_config
 from pygeoapi.util import get_mimetype, get_api_rules
 
+from dokanalyse.utils.correlation_id_middleware import CorrelationIdMiddleware
+from flask_http_middleware import MiddlewareManager
 
 CONFIG = get_config()
 OPENAPI = load_openapi_document()
@@ -281,17 +283,17 @@ def collection_items(collection_id, item_id=None):
             if request.content_type is not None:
                 if request.content_type == 'application/geo+json':
                     return execute_from_flask(
-                            itemtypes_api.manage_collection_item,
-                            request, 'create', collection_id,
-                            skip_valid_check=True)
+                        itemtypes_api.manage_collection_item,
+                        request, 'create', collection_id,
+                        skip_valid_check=True)
                 else:
                     return execute_from_flask(
-                            itemtypes_api.get_collection_items, request,
-                            collection_id, skip_valid_check=True)
+                        itemtypes_api.get_collection_items, request,
+                        collection_id, skip_valid_check=True)
         elif request.method == 'OPTIONS':
             return execute_from_flask(
-                    itemtypes_api.manage_collection_item, request, 'options',
-                    collection_id, skip_valid_check=True)
+                itemtypes_api.manage_collection_item, request, 'options',
+                collection_id, skip_valid_check=True)
         else:  # GET: list items
             return execute_from_flask(itemtypes_api.get_collection_items,
                                       request, collection_id,
@@ -634,3 +636,7 @@ def serve(ctx, server=None, debug=False):
 
 if __name__ == '__main__':  # run locally, for testing
     serve()
+
+
+APP.wsgi_app = MiddlewareManager(APP)
+APP.wsgi_app.add_middleware(CorrelationIdMiddleware)
