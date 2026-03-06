@@ -1,0 +1,53 @@
+server:
+  bind:
+    host: 0.0.0.0
+    port: 5000
+  url: http://localhost:5000
+  mimetype: application/json; charset=UTF-8
+  encoding: utf-8
+  gzip: false
+  languages:
+    - en
+  pretty_print: true
+  limits:
+    default_items: 20
+    max_items: 50
+  map:
+    url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+    attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+
+logging:
+  level: INFO
+
+metadata:
+  identification:
+    title:
+      en: OGC API - DOK-analyse
+    description:
+      en: OGC API er en ny generasjon standarder fra Open Geospatial Consortium. På denne serveren tilbys arealanalyse av DOK-datasett
+    keywords:
+      en:
+        - OGC
+        - DOK
+        - Geodata
+        - API
+    keywords_type: theme
+    terms_of_service: https://creativecommons.org/licenses/by/4.0/
+    url: https://www.kartverket.no
+
+  license:
+    name: CC-BY 4.0 license
+    url: https://creativecommons.org/licenses/by/4.0/
+  provider:
+    name: Kartverket
+    url: https://www.kartverket.no
+  contact:
+    name: Kartverket
+    email: post@kartverket.no
+    url: https://www.kartverket.no
+
+resources:
+  dokanalyse:
+    type: process
+    processor:
+      name: dokanalyse.processor.DokanalyseProcessor
