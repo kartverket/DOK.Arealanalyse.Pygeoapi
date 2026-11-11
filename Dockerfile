@@ -1,4 +1,4 @@
-FROM geopython/pygeoapi:0.22.0
+FROM geopython/pygeoapi:0.24.0
 
 ARG DEB_PACKAGES="\
     git \
