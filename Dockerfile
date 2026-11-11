@@ -1,4 +1,4 @@
-FROM geopython/pygeoapi:0.22.0
+FROM geopython/pygeoapi:0.24.0
 
 ARG DEB_PACKAGES="\
     git \
@@ -8,7 +8,7 @@ ARG DEB_PACKAGES="\
 ARG PYTHON_PACKAGES="\
     starlette \
     uvicorn \
-    git+https://github.com/kartverket/DOK.Arealanalyse.Process.git@main"
+    git+https://github.com/kartverket/DOK.Arealanalyse.Process.git@produksjonsklargjoring"
 
 COPY pygeoapi-config.yml /pygeoapi/pygeoapi-config.yml
 COPY entrypoint.sh /dokanalyse-entrypoint.sh
